@@ -208,6 +208,7 @@ function idpay_edd_get_amount($amount, $currency) {
         case strtolower('IRR'):
         case strtolower('RIAL'):
             return $amount;
+
         case strtolower('تومان ایران'):
         case strtolower('تومان'):
         case strtolower('IRT'):
@@ -219,10 +220,13 @@ function idpay_edd_get_amount($amount, $currency) {
         case strtolower('Iran TOMAN'):
         case strtolower('Iranian TOMAN'):
             return $amount * 10;
+
         case strtolower('IRHT'):
             return $amount * 10000;
+
         case strtolower('IRHR'):
             return $amount * 1000;
+
         default:
             return 0;
     }
