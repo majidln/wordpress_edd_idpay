@@ -5,7 +5,7 @@
  * Description: درگاه پرداخت امن <a href="https://idpay.ir">آیدی پی</a> برای پرداخت در افزودنه دانلود دیجیتال آسان
  * Version: 1.0
  * Author URI: https://idpay.ir
- * Author Email: support@idpay.ir
+ * Author Email: info@idpay.ir
  */
 
 // registers the gateway
@@ -108,8 +108,8 @@ function gateway_function_to_process_payment($purchase_data) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
         'Content-Type: application/json',
-        'X-API-KEY: ' . $api_key,
-        'X-SANDBOX: ' . $sandbox,
+        'X-API-KEY:' . $api_key,
+        'X-SANDBOX:' . $sandbox,
     ));
 
     $result = curl_exec($ch);
@@ -134,8 +134,6 @@ function gateway_function_to_process_payment($purchase_data) {
 
     $_SESSION['idpay_payment'] = $payment;
 
-    //Redirect to payment form
-    //header('Location:' . $result->link);
     wp_redirect($result->link);
 }
 add_action('edd_gateway_idpay_edd_gateway', 'gateway_function_to_process_payment');
@@ -153,12 +151,10 @@ function verify_function_to_process_payment(){
         wp_die('اطلاعات ارسال شده صحیح نمی باشد.');
     }
 
-    if ($payment->status == 'complete') return false;
+    if ($payment->status != 'pending') return false;
 
     $api_key = empty($edd_options['idpay_api_key']) ? '' : $edd_options['idpay_api_key'];
     $sandbox = empty($edd_options['idpay_sandbox']) ? 'false' : 'true';
-
-    // todo: load order_id and id from database!
 
     $data = array(
         'id' => $_POST['id'],
@@ -171,8 +167,8 @@ function verify_function_to_process_payment(){
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
         'Content-Type: application/json',
-        'X-API-KEY: ' . $api_key,
-        'X-SANDBOX: ' . $sandbox,
+        'X-API-KEY:' . $api_key,
+        'X-SANDBOX:' . $sandbox,
     ));
 
     $result = curl_exec($ch);
