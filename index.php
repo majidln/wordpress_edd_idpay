@@ -209,12 +209,24 @@ add_action('edd_verify_idpay_edd_gateway', 'verify_function_to_process_payment')
 //
 function idpay_edd_get_amount($amount, $currency) {
     switch (strtolower($currency)) {
-        case strtolower('IRR') || strtolower('RIAL'):
+        case strtolower('IRR'):
+        case strtolower('RIAL'):
             return $amount;
-
-        case strtolower('IRT') || strtolower('TOMAN') || strtolower('Iran TOMAN') || strtolower('Iranian TOMAN') || strtolower('Iran-TOMAN') || strtolower('Iranian-TOMAN') || strtolower('Iran_TOMAN') || strtolower('Iranian_TOMAN') || strtolower('تومان') ||  strtolower('تومان ایران'):
+        case strtolower('تومان ایران'):
+        case strtolower('تومان'):
+        case strtolower('IRT'):
+        case strtolower('Iranian_TOMAN'):
+        case strtolower('Iran_TOMAN'):
+        case strtolower('Iranian-TOMAN'):
+        case strtolower('Iran-TOMAN'):
+        case strtolower('TOMAN'):
+        case strtolower('Iran TOMAN'):
+        case strtolower('Iranian TOMAN'):
             return $amount * 10;
-
+        case strtolower('IRHT'):
+            return $amount * 10000;
+        case strtolower('IRHR'):
+            return $amount * 1000;
         default:
             return 0;
     }
