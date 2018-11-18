@@ -188,7 +188,7 @@ function verify_function_to_process_payment() {
 	if ( $http_status != 200 ) {
 		$message = 'هنگام استعلام پرداخت خطا رخ داده است';
 		edd_insert_payment_note( $payment->ID, $http_status . ' - ' . $message );
-		edd_update_payment_status( $payment, 'failed' );
+		edd_update_payment_status( $payment->ID, 'failed' );
 		edd_set_error( 'idpay_connect_error', $message );
 		edd_send_back_to_checkout();
 
