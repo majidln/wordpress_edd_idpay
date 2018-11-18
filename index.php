@@ -75,9 +75,9 @@ function gateway_function_to_process_payment( $purchase_data ) {
 	);
 
 	// record the pending payment
-	$payment = edd_insert_payment( $payment_data );
+	$payment_id = edd_insert_payment( $payment_data );
 
-	if ( empty( $payment ) ) {
+	if ( empty( $payment_id ) ) {
 		edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
 	}
 
@@ -85,13 +85,13 @@ function gateway_function_to_process_payment( $purchase_data ) {
 	$sandbox = empty( $edd_options['idpay_sandbox'] ) ? 'false' : 'true';
 
 	$amount   = idpay_edd_get_amount( intval( $purchase_data['price'] ), edd_get_currency() );
-	$desc     = 'سفارش شماره #' . $payment;
+	$desc     = 'سفارش شماره #' . $payment_id;
 	$callback = add_query_arg( 'verify_idpay_edd_gateway', '1', get_permalink( $edd_options['success_page'] ) );
 
 	if ( empty( $amount ) ) {
 		$message = 'واحد پول انتخاب شده پشتیبانی نمی شود.';
-		edd_insert_payment_note( $payment, $message );
-		edd_update_payment_status( $payment, 'failed' );
+		edd_insert_payment_note( $payment_id, $message );
+		edd_update_payment_status( $payment_id, 'failed' );
 		edd_set_error( 'idpay_connect_error', $message );
 		edd_send_back_to_checkout();
 
@@ -99,7 +99,7 @@ function gateway_function_to_process_payment( $purchase_data ) {
 	}
 
 	$data = array(
-		'order_id' => $payment,
+		'order_id' => $payment_id,
 		'amount'   => $amount,
 		'phone'    => '',
 		'desc'     => $desc,
@@ -122,8 +122,8 @@ function gateway_function_to_process_payment( $purchase_data ) {
 
 	if ( $http_status != 201 || empty( $result ) || empty( $result->link ) ) {
 		$message = 'هنگام اتصال به درگاه پرداخت خطا رخ داده است';
-		edd_insert_payment_note( $payment, $http_status . ' - ' . $message );
-		edd_update_payment_status( $payment, 'failed' );
+		edd_insert_payment_note( $payment_id, $http_status . ' - ' . $message );
+		edd_update_payment_status( $payment_id, 'failed' );
 		edd_set_error( 'idpay_connect_error', $message );
 		edd_send_back_to_checkout();
 
@@ -131,12 +131,12 @@ function gateway_function_to_process_payment( $purchase_data ) {
 	}
 
 	//save id and link
-	edd_insert_payment_note( $payment, 'Id: ' . $result->id );
-	edd_insert_payment_note( $payment, 'در حال انتقال به درگاه پرداخت' );
-	edd_update_payment_meta( $payment, 'idpay_payment_id', $result->id );
-	edd_update_payment_meta( $payment, 'idpay_payment_link', $result->link );
+	edd_insert_payment_note( $payment_id, 'Id: ' . $result->id );
+	edd_insert_payment_note( $payment_id, 'در حال انتقال به درگاه پرداخت' );
+	edd_update_payment_meta( $payment_id, 'idpay_payment_id', $result->id );
+	edd_update_payment_meta( $payment_id, 'idpay_payment_link', $result->link );
 
-	$_SESSION['idpay_payment'] = $payment;
+	$_SESSION['idpay_payment'] = $payment_id;
 
 	wp_redirect( $result->link );
 }
