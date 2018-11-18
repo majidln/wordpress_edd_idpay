@@ -122,7 +122,7 @@ function gateway_function_to_process_payment( $purchase_data ) {
 	$result      = json_decode( $result );
 
 	if ( $http_status != 201 || empty( $result ) || empty( $result->link ) ) {
-		$message = 'هنگام اتصال به درگاه پرداخت خطا رخ داده است';
+		$message = $result->error_message;
 		edd_insert_payment_note( $payment_id, $http_status . ' - ' . $message );
 		edd_update_payment_status( $payment_id, 'failed' );
 		edd_set_error( 'idpay_connect_error', $message );
@@ -188,7 +188,7 @@ function verify_function_to_process_payment() {
 	$result      = json_decode( $result );
 
 	if ( $http_status != 200 ) {
-		$message = 'هنگام استعلام پرداخت خطا رخ داده است';
+		$message = $result->error_message;
 		edd_insert_payment_note( $payment->ID, $http_status . ' - ' . $message );
 		edd_update_payment_status( $payment->ID, 'failed' );
 		edd_set_error( 'idpay_connect_error', $message );
