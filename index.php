@@ -198,7 +198,7 @@ function verify_function_to_process_payment() {
 	}
 
 	edd_insert_payment_note( $payment->ID, 'کد رهگیری آیدی پی: ' . $result->track_id );
-	edd_insert_payment_note( $payment->ID, $result->status . ' - ' . idpay_edd_get_error_message( $result->status ) );
+	edd_insert_payment_note( $payment->ID, $result->status . ' - ' . idpay_edd_get_inquiry_status_message( $result->status ) );
 	edd_insert_payment_note( $payment->ID, 'شماره کارت پرداخت کننده: ' . $result->card_no );
 	edd_update_payment_meta( $payment->ID, 'idpay_track_id', $result->track_id );
 	edd_update_payment_meta( $payment->ID, 'idpay_status', $result->status );
@@ -247,7 +247,7 @@ function idpay_edd_get_amount( $amount, $currency ) {
 }
 
 //
-function idpay_edd_get_error_message( $code ) {
+function idpay_edd_get_inquiry_status_message( $code ) {
 	switch ( $code ) {
 		case 1:
 			return 'پرداخت انجام نشده است';
