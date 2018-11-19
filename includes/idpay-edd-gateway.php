@@ -1,12 +1,14 @@
 <?php
 
+define( 'IDPAY_EDD_GATEWAY', 'idpay_edd_gateway' );
+
 // registers the gateway
 function idpay_edd_register_gateway( $gateways ) {
 	if ( ! isset( $_SESSION ) ) {
 		session_start();
 	}
 
-	$gateways['idpay_edd_gateway'] = array(
+	$gateways[ IDPAY_EDD_GATEWAY ] = array(
 		'admin_label'    => 'آیدی پی',
 		'checkout_label' => 'درگاه پرداخت آیدی پی',
 	);
@@ -14,19 +16,38 @@ function idpay_edd_register_gateway( $gateways ) {
 	return $gateways;
 }
 
+/**
+ * Hooks a function into the filter 'edd_payment_gateways' which is defined by
+ * the EDD's core plugin.
+ */
 add_filter( 'edd_payment_gateways', 'idpay_edd_register_gateway' );
 
-// disable payment form in checkout
-function idpay_edd_register_gateway_cc_form() {
+/**
+ * Adds noting to the credit card form in the checkout page. In the other hand,
+ * We want to disable the credit card form in the checkout.
+ *
+ * Therefore we just return.
+ */
+function idpay_edd_gateway_cc_form() {
 	return;
 }
 
-add_action( 'edd_idpay_edd_gateway_cc_form', 'idpay_edd_register_gateway_cc_form' );
+/**
+ * Hooks into edd_{payment gateway ID}_cc_form which is defined
+ * by the EDD's core plugin.
+ */
+add_action( 'edd_' . IDPAY_EDD_GATEWAY . '_cc_form', 'idpay_edd_gateway_cc_form' );
 
-// adds the settings to the Payment Gateways section
-function pw_edd_add_settings( $settings ) {
+/**
+ * Adds the IDPay gateway settings to the Payment Gateways section.
+ *
+ * @param $settings
+ *
+ * @return array
+ */
+function idpay_edd_add_settings( $settings ) {
 
-	$sample_gateway_settings = array(
+	$idpay_gateway_settings = array(
 		array(
 			'id'   => 'idpay_edd_gateway_settings',
 			'type' => 'header',
@@ -46,13 +67,26 @@ function pw_edd_add_settings( $settings ) {
 		),
 	);
 
-	return array_merge( $settings, $sample_gateway_settings );
+	return array_merge( $settings, $idpay_gateway_settings );
 }
 
-add_filter( 'edd_settings_gateways', 'pw_edd_add_settings' );
+/**
+ * Hooks a function into the filter 'edd_settings_gateways' which is defined by
+ * the EDD's core plugin.
+ */
+add_filter( 'edd_settings_gateways', 'idpay_edd_add_settings' );
 
-//
-function gateway_function_to_process_payment( $purchase_data ) {
+/**
+ * Creates a payment on the gateway.
+ * See https://idpay.ir/web-service for more information.
+ *
+ * @param $purchase_data
+ *  The argument which will be passed to
+ *  the hook edd_gateway_{payment gateway ID}
+ *
+ * @return bool
+ */
+function idpay_edd_create_payment( $purchase_data ) {
 	global $edd_options;
 
 	$payment_data = array(
@@ -135,10 +169,18 @@ function gateway_function_to_process_payment( $purchase_data ) {
 	wp_redirect( $result->link );
 }
 
-add_action( 'edd_gateway_idpay_edd_gateway', 'gateway_function_to_process_payment' );
+/**
+ * Hooks into edd_gateway_{payment gateway ID} which is defined in the
+ * EDD's core plugin.
+ */
+add_action( 'edd_gateway_' . IDPAY_EDD_GATEWAY, 'idpay_edd_create_payment' );
 
-//
-function verify_function_to_process_payment() {
+/**
+ * Holds an inquiry for the payment created on the gateway.
+ *
+ * See https://idpay.ir/web-service for more information.
+ */
+function idpay_edd_hold_inquiry() {
 	global $edd_options;
 
 	if ( empty( $_POST['id'] ) || empty( $_POST['order_id'] ) ) {
@@ -207,9 +249,23 @@ function verify_function_to_process_payment() {
 	}
 }
 
-add_action( 'edd_verify_idpay_edd_gateway', 'verify_function_to_process_payment' );
+/**
+ * Hooks into our custom hook in order to verifying the payment.
+ */
+add_action( 'idpay_edd_inquiry', 'idpay_edd_hold_inquiry' );
 
-//
+/**
+ * Helper function to obtain the amount by considering whether a unit price is in
+ * Iranian Rial Or Iranian Toman unit.
+ *
+ * As the IDPay gateway accepts orders with IRR unit price, We must convert
+ * Tomans into Rials by multiplying them by 10.
+ *
+ * @param $amount
+ * @param $currency
+ *
+ * @return float|int
+ */
 function idpay_edd_get_amount( $amount, $currency ) {
 	switch ( strtolower( $currency ) ) {
 		case strtolower( 'IRR' ):
@@ -239,7 +295,17 @@ function idpay_edd_get_amount( $amount, $currency ) {
 	}
 }
 
-//
+/**
+ * Helper function to the obtain gateway messages at the inquiry endpoint
+ * according to their codes.
+ *
+ * for more information refer to the gateway documentation:
+ * https://idpay.ir/web-service
+ *
+ * @param $code
+ *
+ * @return string
+ */
 function idpay_edd_get_inquiry_status_message( $code ) {
 	switch ( $code ) {
 		case 1:
@@ -265,9 +331,14 @@ function idpay_edd_get_inquiry_status_message( $code ) {
  * @return void
  */
 function listen() {
-	if ( isset( $_GET['verify_idpay_edd_gateway'] ) && $_GET['verify_idpay_edd_gateway'] ) {
-		do_action( 'edd_verify_idpay_edd_gateway' );
+	if ( isset( $_GET[ 'verify_' . IDPAY_EDD_GATEWAY ] ) && $_GET[ 'verify_' . IDPAY_EDD_GATEWAY ] ) {
+
+		// Executes the function(s) hooked into our custom hook for verifying the payment.
+		do_action( 'idpay_edd_inquiry' );
 	}
 }
 
+/**
+ * Hooks the listen() function into the Wordpress initializing process.
+ */
 add_action( 'init', 'listen' );
