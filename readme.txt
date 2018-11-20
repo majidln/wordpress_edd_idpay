@@ -22,5 +22,14 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 == Changelog ==
 
+= 1.1, November 20, 2018 =
+* ذخیره کردن شماره کارت که توسط گیت وی برگردانده می شود
+* [کدینگ استاندارد](https://codex.wordpress.org/WordPress_Coding_Standards)
+* رفع باگ
+* ری فاکتور کردن نام برخی توابع و هوک ها
+* استفاده از use wp_safe_remote_post() به جای curl
+* افزودن مستندات برای توابع پی.اچ.پی
+
 = 1.0, September 30, 2018 =
 * انتشار اولین نسخه از درگاه پرداخت آیدی پی برای افزونه Easy Digital Downloads
+git commit -am ""
