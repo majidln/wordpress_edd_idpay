@@ -1,5 +1,5 @@
 === IDPay for Easy Digital Downloads (EDD) ===
-Contributors: majidlotfinia, jazaali
+Contributors: majidlotfinia, jazaali, imikiani
 Tags: idpay, digital downloads, download, ecommerce, e-commerce, download, payment, gateway, edd
 Stable tag: trunk
 Tested up to: 5.0
