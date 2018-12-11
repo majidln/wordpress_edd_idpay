@@ -16,4 +16,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Load plugin textdomain.
+ */
+function idpay_for_edd_load_textdomain() {
+	load_plugin_textdomain( 'idpay-for-edd', false, basename( dirname( __FILE__ ) ) . '/languages' );
+}
+
+add_action( 'init', 'idpay_for_edd_load_textdomain' );
+
 include_once('includes/idpay-edd-gateway.php');
