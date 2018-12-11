@@ -27,6 +27,10 @@ After that, if a customer is going to purchase a downloadable product which is c
 
 == Changelog ==
 
+= 1.2.1, December 11, 2018 =
+* Load text domain.
+* Check if 'ABSPATH' is defined.
+
 = 1.2, December 11, 2018 =
 * Plugin translation
 
