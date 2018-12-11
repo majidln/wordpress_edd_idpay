@@ -12,4 +12,8 @@
  * Domain Path: languages
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 include_once('includes/idpay-edd-gateway.php');

@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 define( 'IDPAY_EDD_GATEWAY', 'idpay_edd_gateway' );
 
 // registers the gateway
