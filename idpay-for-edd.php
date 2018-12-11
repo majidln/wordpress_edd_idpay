@@ -6,6 +6,8 @@
  * Version: 1.1
  * Author URI: https://idpay.ir
  * Author Email: info@idpay.ir
+ * Tested up to: 5.0
+ *
  * Text Domain: idpay-for-edd
  * Domain Path: languages
  */
