@@ -9,8 +9,8 @@ function idpay_edd_register_gateway( $gateways ) {
 	}
 
 	$gateways[ IDPAY_EDD_GATEWAY ] = array(
-		'admin_label'    => 'آیدی پی',
-		'checkout_label' => 'درگاه پرداخت آیدی پی',
+		'admin_label'    => __( 'IDPay', 'idpay-for-edd' ),
+		'checkout_label' => __( 'IDPay payment gateway', 'idpay-for-edd' ),
 	);
 
 	return $gateways;
@@ -51,7 +51,7 @@ function idpay_edd_add_settings( $settings ) {
 		array(
 			'id'   => 'idpay_edd_gateway_settings',
 			'type' => 'header',
-			'name' => 'درگاه پرداخت آیدی پی',
+			'name' => __( 'IDPay payment gateway', 'idpay-for-edd' ),
 		),
 		array(
 			'id'   => 'idpay_api_key',
@@ -62,7 +62,7 @@ function idpay_edd_add_settings( $settings ) {
 		array(
 			'id'      => 'idpay_sandbox',
 			'type'    => 'checkbox',
-			'name'    => 'آزمایشگاه',
+			'name'    => __( 'Sandbox', 'idpay-for-edd' ),
 			'default' => 0,
 		),
 	);
@@ -112,11 +112,11 @@ function idpay_edd_create_payment( $purchase_data ) {
 	$sandbox = empty( $edd_options['idpay_sandbox'] ) ? 'false' : 'true';
 
 	$amount   = idpay_edd_get_amount( intval( $purchase_data['price'] ), edd_get_currency() );
-	$desc     = 'سفارش شماره #' . $payment_id;
+	$desc     = __( 'Oder number #', 'idpay-for-edd' ) . $payment_id;
 	$callback = add_query_arg( 'verify_idpay_edd_gateway', '1', get_permalink( $edd_options['success_page'] ) );
 
 	if ( empty( $amount ) ) {
-		$message = 'واحد پول انتخاب شده پشتیبانی نمی شود.';
+		$message = __( 'selected currency is not supported.', 'idpay-for-edd' );
 		edd_insert_payment_note( $payment_id, $message );
 		edd_update_payment_status( $payment_id, 'failed' );
 		edd_set_error( 'idpay_connect_error', $message );
@@ -159,8 +159,8 @@ function idpay_edd_create_payment( $purchase_data ) {
 	}
 
 	//save id and link
-	edd_insert_payment_note( $payment_id, 'Id: ' . $result->id );
-	edd_insert_payment_note( $payment_id, 'در حال انتقال به درگاه پرداخت' );
+	edd_insert_payment_note( $payment_id, __( 'Transaction ID: ', 'idpay-for-edd' ) . $result->id );
+	edd_insert_payment_note( $payment_id, 'Redirecting to the payment gateway.', 'idpay-for-edd' );
 	edd_update_payment_meta( $payment_id, 'idpay_payment_id', $result->id );
 	edd_update_payment_meta( $payment_id, 'idpay_payment_link', $result->link );
 
@@ -191,7 +191,7 @@ function idpay_edd_hold_inquiry() {
 	unset( $_SESSION['idpay_payment'] );
 
 	if ( ! $payment ) {
-		wp_die( 'اطلاعات ارسال شده صحیح نمی باشد.' );
+		wp_die( __( 'The information sent is not correct.', 'idpay-for-edd' ) );
 	}
 
 	if ( $payment->status != 'pending' ) {
@@ -232,9 +232,9 @@ function idpay_edd_hold_inquiry() {
 		return FALSE;
 	}
 
-	edd_insert_payment_note( $payment->ID, 'کد رهگیری آیدی پی: ' . $result->track_id );
+	edd_insert_payment_note( $payment->ID, __( 'IDPay tracking id: ', 'idpay-for-edd' ) . $result->track_id );
 	edd_insert_payment_note( $payment->ID, $result->status . ' - ' . idpay_edd_get_inquiry_status_message( $result->status ) );
-	edd_insert_payment_note( $payment->ID, 'شماره کارت پرداخت کننده: ' . $result->card_no );
+	edd_insert_payment_note( $payment->ID, __( 'Payer card number: ', 'idpay-for-edd' ) . $result->card_no );
 	edd_update_payment_meta( $payment->ID, 'idpay_track_id', $result->track_id );
 	edd_update_payment_meta( $payment->ID, 'idpay_status', $result->status );
 	edd_update_payment_meta( $payment->ID, 'idpay_payment_card_no', $result->card_no );
@@ -255,8 +255,8 @@ function idpay_edd_hold_inquiry() {
 add_action( 'idpay_edd_inquiry', 'idpay_edd_hold_inquiry' );
 
 /**
- * Helper function to obtain the amount by considering whether a unit price is in
- * Iranian Rial Or Iranian Toman unit.
+ * Helper function to obtain the amount by considering whether a unit price is
+ * in Iranian Rial Or Iranian Toman unit.
  *
  * As the IDPay gateway accepts orders with IRR unit price, We must convert
  * Tomans into Rials by multiplying them by 10.
@@ -309,19 +309,19 @@ function idpay_edd_get_amount( $amount, $currency ) {
 function idpay_edd_get_inquiry_status_message( $code ) {
 	switch ( $code ) {
 		case 1:
-			return 'پرداخت انجام نشده است';
+			return __( 'Payment has not been made.', 'idpay-for-edd' );
 
 		case 2:
-			return 'پرداخت ناموفق بوده است';
+			return __( 'Payment has been unsuccessful.', 'idpay-for-edd' );
 
 		case 3:
-			return 'خطا رخ داده است';
+			return __( 'An error occurred.', 'idpay-for-edd' );
 
 		case 100:
-			return 'پرداخت تایید شده است';
+			return __( 'Payment has been confirmed.', 'idpay-for-edd' );
 
 		default:
-			return 'کد تعریف نشده است';
+			return __( 'The code has not been defined.', 'idpay-for-edd' );
 	}
 }
 
