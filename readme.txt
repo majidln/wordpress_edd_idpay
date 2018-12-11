@@ -27,6 +27,9 @@ After that, if a customer is going to purchase a downloadable product which is c
 
 == Changelog ==
 
+= 1.2, December 11, 2018 =
+* Plugin translation
+
 = 1.1, November 20, 2018 =
 * Save card number returned by the gateway
 * [Coding Standards](https://codex.wordpress.org/WordPress_Coding_Standards)
