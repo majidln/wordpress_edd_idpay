@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IDPay for Easy Digital Downloads (EDD) 1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/idpay-for-edd\n"
-"POT-Creation-Date: 2018-12-11 09:51:10+00:00\n"
+"POT-Creation-Date: 2018-12-11 10:29:11+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -37,11 +37,11 @@ msgid "If you check this option, the gateway will work in Test (Sandbox) mode."
 msgstr ""
 
 #: includes/idpay-edd-gateway.php:117
-msgid "Oder number #"
+msgid "Order number #"
 msgstr ""
 
 #: includes/idpay-edd-gateway.php:121
-msgid "selected currency is not supported."
+msgid "Selected currency is not supported."
 msgstr ""
 
 #: includes/idpay-edd-gateway.php:164

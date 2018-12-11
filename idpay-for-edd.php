@@ -7,6 +7,7 @@
  * Author URI: https://idpay.ir
  * Author Email: info@idpay.ir
  * Text Domain: idpay-for-edd
+ * Domain Path: languages
  */
 
 include_once('includes/idpay-edd-gateway.php');

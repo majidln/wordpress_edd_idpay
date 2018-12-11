@@ -114,11 +114,11 @@ function idpay_edd_create_payment( $purchase_data ) {
 	$sandbox = empty( $edd_options['idpay_sandbox'] ) ? 'false' : 'true';
 
 	$amount   = idpay_edd_get_amount( intval( $purchase_data['price'] ), edd_get_currency() );
-	$desc     = __( 'Oder number #', 'idpay-for-edd' ) . $payment_id;
+	$desc     = __( 'Order number #', 'idpay-for-edd' ) . $payment_id;
 	$callback = add_query_arg( 'verify_idpay_edd_gateway', '1', get_permalink( $edd_options['success_page'] ) );
 
 	if ( empty( $amount ) ) {
-		$message = __( 'selected currency is not supported.', 'idpay-for-edd' );
+		$message = __( 'Selected currency is not supported.', 'idpay-for-edd' );
 		edd_insert_payment_note( $payment_id, $message );
 		edd_update_payment_status( $payment_id, 'failed' );
 		edd_set_error( 'idpay_connect_error', $message );
