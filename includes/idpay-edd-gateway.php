@@ -162,7 +162,7 @@ function idpay_edd_create_payment( $purchase_data ) {
 
 	//save id and link
 	edd_insert_payment_note( $payment_id, __( 'Transaction ID: ', 'idpay-for-edd' ) . $result->id );
-	edd_insert_payment_note( $payment_id, 'Redirecting to the payment gateway.', 'idpay-for-edd' );
+	edd_insert_payment_note( $payment_id, __( 'Redirecting to the payment gateway.', 'idpay-for-edd' ) );
 	edd_update_payment_meta( $payment_id, 'idpay_payment_id', $result->id );
 	edd_update_payment_meta( $payment_id, 'idpay_payment_link', $result->link );
 
