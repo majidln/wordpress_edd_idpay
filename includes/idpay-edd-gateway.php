@@ -58,12 +58,14 @@ function idpay_edd_add_settings( $settings ) {
 			'type' => 'text',
 			'name' => 'API Key',
 			'size' => 'regular',
+			'desc' => __( 'You can create an API Key by going to your <a href="https://idpay.ir/dashboard/web-services">IDPay account</a>.', 'idpay-for-edd' ),
 		),
 		array(
 			'id'      => 'idpay_sandbox',
 			'type'    => 'checkbox',
 			'name'    => __( 'Sandbox', 'idpay-for-edd' ),
 			'default' => 0,
+			'desc'    => __( 'If you check this option, the gateway will work in Test (Sandbox) mode.', 'idpay-for-edd' ),
 		),
 	);
 
