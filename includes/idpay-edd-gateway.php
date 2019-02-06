@@ -148,6 +148,7 @@ function idpay_edd_create_payment( $purchase_data ) {
 	$args        = array(
 		'body'    => json_encode( $data ),
 		'headers' => $headers,
+		'timeout' => 30,
 	);
 	$response    = wp_safe_remote_post( 'https://api.idpay.ir/v1/payment', $args );
 	$http_status = wp_remote_retrieve_response_code( $response );
@@ -221,6 +222,7 @@ function idpay_edd_hold_inquiry() {
 	$args = array(
 		'body'    => json_encode( $data ),
 		'headers' => $headers,
+		'timeout' => 30,
 	);
 
 	$response    = wp_safe_remote_post( 'https://api.idpay.ir/v1/payment/inquiry', $args );
