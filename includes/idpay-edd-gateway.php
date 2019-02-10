@@ -131,10 +131,16 @@ function idpay_edd_create_payment( $purchase_data ) {
 		return FALSE;
 	}
 
+	$user_info = $purchase_data['user_info'];
+	$name      = $user_info['first_name'] . ' ' . $user_info['last_name'];
+	$mail      = $user_info['email'];
+
 	$data = array(
 		'order_id' => $payment_id,
 		'amount'   => $amount,
+		'name'     => $name,
 		'phone'    => '',
+		'mail'     => $mail,
 		'desc'     => $desc,
 		'callback' => $callback,
 	);
@@ -427,6 +433,7 @@ function idpay_edd_listen() {
 }
 
 /**
- * Hooks the idpay_edd_listen() function into the Wordpress initializing process.
+ * Hooks the idpay_edd_listen() function into the Wordpress initializing
+ * process.
  */
 add_action( 'init', 'idpay_edd_listen' );
