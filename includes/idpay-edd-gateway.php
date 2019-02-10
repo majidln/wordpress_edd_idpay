@@ -150,7 +150,7 @@ function idpay_edd_create_payment( $purchase_data ) {
 		'headers' => $headers,
 		'timeout' => 30,
 	);
-	$response    = wp_safe_remote_post( 'https://api.idpay.ir/v1/payment', $args );
+	$response    = wp_safe_remote_post( 'https://api.idpay.ir/v1.1/payment', $args );
 	$http_status = wp_remote_retrieve_response_code( $response );
 	$result      = wp_remote_retrieve_body( $response );
 	$result      = json_decode( $result );
@@ -165,11 +165,12 @@ function idpay_edd_create_payment( $purchase_data ) {
 		return FALSE;
 	}
 
-	//save id and link
+	// Saves transaction id and link
 	edd_insert_payment_note( $payment_id, __( 'Transaction ID: ', 'idpay-for-edd' ) . $result->id );
 	edd_insert_payment_note( $payment_id, __( 'Redirecting to the payment gateway.', 'idpay-for-edd' ) );
-	edd_update_payment_meta( $payment_id, 'idpay_payment_id', $result->id );
-	edd_update_payment_meta( $payment_id, 'idpay_payment_link', $result->link );
+
+	edd_update_payment_meta( $payment_id, '_idpay_edd_transaction_id', $result->id );
+	edd_update_payment_meta( $payment_id, '_idpay_edd_transaction_link', $result->link );
 
 	$_SESSION['idpay_payment'] = $payment_id;
 
@@ -183,14 +184,24 @@ function idpay_edd_create_payment( $purchase_data ) {
 add_action( 'edd_gateway_' . IDPAY_EDD_GATEWAY, 'idpay_edd_create_payment' );
 
 /**
- * Holds an inquiry for the payment created on the gateway.
+ * Verify the payment created on the gateway.
  *
  * See https://idpay.ir/web-service for more information.
  */
-function idpay_edd_hold_inquiry() {
+function idpay_edd_verify_payment() {
 	global $edd_options;
 
-	if ( empty( $_POST['id'] ) || empty( $_POST['order_id'] ) ) {
+
+	$status   = empty( $_POST['status'] ) ? NULL : $_POST['status'];
+	$track_id = empty( $_POST['track_id'] ) ? NULL : $_POST['track_id'];
+	$id       = empty( $_POST['id'] ) ? NULL : $_POST['id'];
+	$order_id = empty( $_POST['order_id'] ) ? NULL : $_POST['order_id'];
+	$amount   = empty( $_POST['amount'] ) ? NULL : $_POST['amount'];
+	$card_no  = empty( $_POST['card_no'] ) ? NULL : $_POST['card_no'];
+	$date     = empty( $_POST['date'] ) ? NULL : $_POST['date'];
+
+	if ( empty( $id ) || empty( $order_id ) ) {
+
 		return FALSE;
 	}
 
@@ -205,62 +216,89 @@ function idpay_edd_hold_inquiry() {
 		return FALSE;
 	}
 
-	$api_key = empty( $edd_options['idpay_api_key'] ) ? '' : $edd_options['idpay_api_key'];
-	$sandbox = empty( $edd_options['idpay_sandbox'] ) ? 'false' : 'true';
 
-	$data = array(
-		'id'       => $_POST['id'],
-		'order_id' => $payment->ID,
-	);
+	// Stores payment's meta data.
+	edd_update_payment_meta( $payment->ID, '_idpay_edd_transaction_status', $status );
+	edd_update_payment_meta( $payment->ID, '_idpay_edd_track_id', $track_id );
+	edd_update_payment_meta( $payment->ID, '_idpay_edd_transaction_id', $id );
+	edd_update_payment_meta( $payment->ID, '_idpay_edd_transaction_order_id', $order_id );
+	edd_update_payment_meta( $payment->ID, '_idpay_edd_transaction_amount', $amount );
+	edd_update_payment_meta( $payment->ID, '_idpay_edd_payment_card_no', $card_no );
+	edd_update_payment_meta( $payment->ID, '_idpay_edd_payment_date', $date );
 
-	$headers = array(
-		'Content-Type' => 'application/json',
-		'X-API-KEY'    => $api_key,
-		'X-SANDBOX'    => $sandbox,
-	);
 
-	$args = array(
-		'body'    => json_encode( $data ),
-		'headers' => $headers,
-		'timeout' => 30,
-	);
+	if ( isset( $status ) && $status == 10 ) {
 
-	$response    = wp_safe_remote_post( 'https://api.idpay.ir/v1/payment/inquiry', $args );
-	$http_status = wp_remote_retrieve_response_code( $response );
-	$result      = wp_remote_retrieve_body( $response );
-	$result      = json_decode( $result );
 
-	if ( $http_status != 200 ) {
-		$message = $result->error_message;
-		edd_insert_payment_note( $payment->ID, $http_status . ' - ' . $message );
-		edd_update_payment_status( $payment->ID, 'failed' );
-		edd_set_error( 'idpay_connect_error', $message );
-		edd_send_back_to_checkout();
+		$api_key = empty( $edd_options['idpay_api_key'] ) ? '' : $edd_options['idpay_api_key'];
+		$sandbox = empty( $edd_options['idpay_sandbox'] ) ? 'false' : 'true';
+
+		$data = array(
+			'id'       => $_POST['id'],
+			'order_id' => $payment->ID,
+		);
+
+		$headers = array(
+			'Content-Type' => 'application/json',
+			'X-API-KEY'    => $api_key,
+			'X-SANDBOX'    => $sandbox,
+		);
+
+		$args = array(
+			'body'    => json_encode( $data ),
+			'headers' => $headers,
+			'timeout' => 30,
+		);
+
+		$response    = wp_safe_remote_post( 'https://api.idpay.ir/v1.1/payment/verify', $args );
+		$http_status = wp_remote_retrieve_response_code( $response );
+		$result      = wp_remote_retrieve_body( $response );
+		$result      = json_decode( $result );
+
+		if ( $http_status != 200 ) {
+			$message = $result->error_message;
+			edd_insert_payment_note( $payment->ID, $http_status . ' - ' . $message );
+			edd_update_payment_status( $payment->ID, 'failed' );
+			edd_set_error( 'idpay_connect_error', $message );
+			edd_send_back_to_checkout();
+
+			return FALSE;
+		}
+
+		edd_insert_payment_note( $payment->ID, __( 'IDPay tracking id: ', 'idpay-for-edd' ) . $result->track_id );
+		edd_insert_payment_note( $payment->ID, $result->status . ' - ' . idpay_edd_get_inquiry_status_message( $result->status ) );
+		edd_insert_payment_note( $payment->ID, __( 'Payer card number: ', 'idpay-for-edd' ) . $result->payment->card_no );
+
+		// Updates payment's meta data.
+		edd_update_payment_meta( $payment->ID, '_idpay_edd_transaction_status', $result->status );
+		edd_update_payment_meta( $payment->ID, '_idpay_edd_track_id', $result->track_id );
+		edd_update_payment_meta( $payment->ID, '_idpay_edd_transaction_id', $result->id );
+		edd_update_payment_meta( $payment->ID, '_idpay_edd_transaction_order_id', $result->order_id );
+		edd_update_payment_meta( $payment->ID, '_idpay_edd_transaction_amount', $result->amount );
+		edd_update_payment_meta( $payment->ID, '_idpay_edd_payment_card_no', $result->payment->card_no );
+		edd_update_payment_meta( $payment->ID, '_idpay_edd_payment_date', $result->payment->date );
+
+		if ( $result->status >= 100 ) {
+			edd_empty_cart();
+			edd_update_payment_status( $payment->ID, 'publish' );
+			edd_send_to_success_page();
+		} else {
+			edd_update_payment_status( $payment->ID, 'failed' );
+			wp_redirect( get_permalink( $edd_options['failure_page'] ) );
+		}
+	} else {
+		edd_insert_payment_note( $payment->ID, $status . ' - ' . idpay_edd_get_inquiry_status_message( $status ) );
+		edd_insert_payment_note( $payment->ID, __( 'IDPay tracking id: ', 'idpay-for-edd' ) . $track_id );
+		edd_insert_payment_note( $payment->ID, __( 'Payer card number: ', 'idpay-for-edd' ) . $card_no );
 
 		return FALSE;
-	}
-
-	edd_insert_payment_note( $payment->ID, __( 'IDPay tracking id: ', 'idpay-for-edd' ) . $result->track_id );
-	edd_insert_payment_note( $payment->ID, $result->status . ' - ' . idpay_edd_get_inquiry_status_message( $result->status ) );
-	edd_insert_payment_note( $payment->ID, __( 'Payer card number: ', 'idpay-for-edd' ) . $result->card_no );
-	edd_update_payment_meta( $payment->ID, 'idpay_track_id', $result->track_id );
-	edd_update_payment_meta( $payment->ID, 'idpay_status', $result->status );
-	edd_update_payment_meta( $payment->ID, 'idpay_payment_card_no', $result->card_no );
-
-	if ( $result->status == 100 ) {
-		edd_empty_cart();
-		edd_update_payment_status( $payment->ID, 'publish' );
-		edd_send_to_success_page();
-	} else {
-		edd_update_payment_status( $payment->ID, 'failed' );
-		wp_redirect( get_permalink( $edd_options['failure_page'] ) );
 	}
 }
 
 /**
  * Hooks into our custom hook in order to verifying the payment.
  */
-add_action( 'idpay_edd_inquiry', 'idpay_edd_hold_inquiry' );
+add_action( 'idpay_edd_verify', 'idpay_edd_verify_payment' );
 
 /**
  * Helper function to obtain the amount by considering whether a unit price is
@@ -342,7 +380,7 @@ function listen() {
 	if ( isset( $_GET[ 'verify_' . IDPAY_EDD_GATEWAY ] ) && $_GET[ 'verify_' . IDPAY_EDD_GATEWAY ] ) {
 
 		// Executes the function(s) hooked into our custom hook for verifying the payment.
-		do_action( 'idpay_edd_inquiry' );
+		do_action( 'idpay_edd_verify' );
 	}
 }
 
