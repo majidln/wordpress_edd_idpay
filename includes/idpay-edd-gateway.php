@@ -265,8 +265,8 @@ function idpay_edd_verify_payment() {
 			return FALSE;
 		}
 
-		edd_insert_payment_note( $payment->ID, __( 'IDPay tracking id: ', 'idpay-for-edd' ) . $result->track_id );
 		edd_insert_payment_note( $payment->ID, $result->status . ' - ' . idpay_edd_get_verification_status_message( $result->status ) );
+		edd_insert_payment_note( $payment->ID, __( 'IDPay tracking id: ', 'idpay-for-edd' ) . $result->track_id );
 		edd_insert_payment_note( $payment->ID, __( 'Payer card number: ', 'idpay-for-edd' ) . $result->payment->card_no );
 
 		// Updates payment's meta data.
