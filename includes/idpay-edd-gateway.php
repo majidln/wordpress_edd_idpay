@@ -414,7 +414,7 @@ function idpay_edd_double_spending_occurred( $payment_id, $remote_id ) {
  *
  * @return void
  */
-function listen() {
+function idpay_edd_listen() {
 	if ( isset( $_GET[ 'verify_' . IDPAY_EDD_GATEWAY ] ) && $_GET[ 'verify_' . IDPAY_EDD_GATEWAY ] ) {
 
 		// Executes the function(s) hooked into our custom hook for verifying the payment.
@@ -423,6 +423,6 @@ function listen() {
 }
 
 /**
- * Hooks the listen() function into the Wordpress initializing process.
+ * Hooks the idpay_edd_listen() function into the Wordpress initializing process.
  */
-add_action( 'init', 'listen' );
+add_action( 'init', 'idpay_edd_listen' );
