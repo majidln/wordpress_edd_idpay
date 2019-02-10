@@ -363,8 +363,26 @@ function idpay_edd_get_inquiry_status_message( $code ) {
 		case 3:
 			return __( 'An error occurred.', 'idpay-for-edd' );
 
+		case 4:
+			return __( 'Payment has been blocked.', 'idpay-for-edd' );
+
+		case 5:
+			return __( 'Returned to the payer.', 'idpay-for-edd' );
+
+		case 6:
+			return __( 'System returned.', 'idpay-for-edd' );
+
+		case 10:
+			return __( 'Pending verification.', 'idpay-for-edd' );
+
 		case 100:
-			return __( 'Payment has been confirmed.', 'idpay-for-edd' );
+			return __( 'Payment has been verified.', 'idpay-for-edd' );
+
+		case 101:
+			return __( 'Payment has already been verified.', 'idpay-for-edd' );
+
+		case 200:
+			return __( 'To the payee was deposited.', 'idpay-for-edd' );
 
 		default:
 			return __( 'The code has not been defined.', 'idpay-for-edd' );
