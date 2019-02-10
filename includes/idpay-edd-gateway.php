@@ -271,7 +271,9 @@ function idpay_edd_verify_payment() {
 
 		edd_insert_payment_note( $payment->ID, $result->status . ' - ' . idpay_edd_get_verification_status_message( $result->status ) );
 		edd_insert_payment_note( $payment->ID, __( 'IDPay tracking id: ', 'idpay-for-edd' ) . $result->track_id );
-		edd_insert_payment_note( $payment->ID, __( 'Payer card number: ', 'idpay-for-edd' ) . $result->payment->card_no );
+		if ( ! empty( $result->payment ) ) {
+			edd_insert_payment_note( $payment->ID, __( 'Payer card number: ', 'idpay-for-edd' ) . $result->payment->card_no );
+		}
 
 		// Updates payment's meta data.
 		edd_update_payment_meta( $payment->ID, '_idpay_edd_transaction_status', $result->status );
@@ -279,8 +281,10 @@ function idpay_edd_verify_payment() {
 		edd_update_payment_meta( $payment->ID, '_idpay_edd_transaction_id', $result->id );
 		edd_update_payment_meta( $payment->ID, '_idpay_edd_transaction_order_id', $result->order_id );
 		edd_update_payment_meta( $payment->ID, '_idpay_edd_transaction_amount', $result->amount );
-		edd_update_payment_meta( $payment->ID, '_idpay_edd_payment_card_no', $result->payment->card_no );
-		edd_update_payment_meta( $payment->ID, '_idpay_edd_payment_date', $result->payment->date );
+		if ( ! empty( $result->payment ) ) {
+			edd_update_payment_meta( $payment->ID, '_idpay_edd_payment_card_no', $result->payment->card_no );
+			edd_update_payment_meta( $payment->ID, '_idpay_edd_payment_date', $result->payment->date );
+		}
 
 		if ( $result->status >= 100 ) {
 			edd_empty_cart();
