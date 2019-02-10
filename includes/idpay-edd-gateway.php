@@ -266,7 +266,7 @@ function idpay_edd_verify_payment() {
 		}
 
 		edd_insert_payment_note( $payment->ID, __( 'IDPay tracking id: ', 'idpay-for-edd' ) . $result->track_id );
-		edd_insert_payment_note( $payment->ID, $result->status . ' - ' . idpay_edd_get_inquiry_status_message( $result->status ) );
+		edd_insert_payment_note( $payment->ID, $result->status . ' - ' . idpay_edd_get_verification_status_message( $result->status ) );
 		edd_insert_payment_note( $payment->ID, __( 'Payer card number: ', 'idpay-for-edd' ) . $result->payment->card_no );
 
 		// Updates payment's meta data.
@@ -287,7 +287,7 @@ function idpay_edd_verify_payment() {
 			wp_redirect( get_permalink( $edd_options['failure_page'] ) );
 		}
 	} else {
-		edd_insert_payment_note( $payment->ID, $status . ' - ' . idpay_edd_get_inquiry_status_message( $status ) );
+		edd_insert_payment_note( $payment->ID, $status . ' - ' . idpay_edd_get_verification_status_message( $status ) );
 		edd_insert_payment_note( $payment->ID, __( 'IDPay tracking id: ', 'idpay-for-edd' ) . $track_id );
 		edd_insert_payment_note( $payment->ID, __( 'Payer card number: ', 'idpay-for-edd' ) . $card_no );
 
@@ -342,7 +342,7 @@ function idpay_edd_get_amount( $amount, $currency ) {
 }
 
 /**
- * Helper function to the obtain gateway messages at the inquiry endpoint
+ * Helper function to the obtain gateway messages at the verification endpoint
  * according to their codes.
  *
  * for more information refer to the gateway documentation:
@@ -352,7 +352,7 @@ function idpay_edd_get_amount( $amount, $currency ) {
  *
  * @return string
  */
-function idpay_edd_get_inquiry_status_message( $code ) {
+function idpay_edd_get_verification_status_message( $code ) {
 	switch ( $code ) {
 		case 1:
 			return __( 'Payment has not been made.', 'idpay-for-edd' );
