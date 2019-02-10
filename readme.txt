@@ -30,6 +30,7 @@ After that, if a customer is going to purchase a downloadable product which is c
 = 2.0, February 10, 2019 =
 * Published for web service version 1.1.
 * Increase timeout of wp_safe_remote_post().
+* Check Double-Spending.
 
 = 1.2.1, December 11, 2018 =
 * Load text domain.
