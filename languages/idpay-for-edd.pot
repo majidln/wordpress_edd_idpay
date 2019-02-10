@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2019-02-10T10:07:58+00:00\n"
+"POT-Creation-Date: 2019-02-10T14:27:26+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.1.0\n"
 "X-Domain: idpay-for-edd\n"
@@ -65,59 +65,60 @@ msgid "Redirecting to the payment gateway."
 msgstr ""
 
 #: includes/idpay-edd-gateway.php:212
+#: includes/idpay-edd-gateway.php:216
 msgid "The information sent is not correct."
 msgstr ""
 
-#: includes/idpay-edd-gateway.php:268
-#: includes/idpay-edd-gateway.php:291
+#: includes/idpay-edd-gateway.php:273
+#: includes/idpay-edd-gateway.php:299
 msgid "IDPay tracking id: "
 msgstr ""
 
-#: includes/idpay-edd-gateway.php:270
-#: includes/idpay-edd-gateway.php:292
+#: includes/idpay-edd-gateway.php:275
+#: includes/idpay-edd-gateway.php:300
 msgid "Payer card number: "
 msgstr ""
 
-#: includes/idpay-edd-gateway.php:358
+#: includes/idpay-edd-gateway.php:366
 msgid "Payment has not been made."
 msgstr ""
 
-#: includes/idpay-edd-gateway.php:361
+#: includes/idpay-edd-gateway.php:369
 msgid "Payment has been unsuccessful."
 msgstr ""
 
-#: includes/idpay-edd-gateway.php:364
+#: includes/idpay-edd-gateway.php:372
 msgid "An error occurred."
 msgstr ""
 
-#: includes/idpay-edd-gateway.php:367
+#: includes/idpay-edd-gateway.php:375
 msgid "Payment has been blocked."
 msgstr ""
 
-#: includes/idpay-edd-gateway.php:370
+#: includes/idpay-edd-gateway.php:378
 msgid "Returned to the payer."
 msgstr ""
 
-#: includes/idpay-edd-gateway.php:373
+#: includes/idpay-edd-gateway.php:381
 msgid "System returned."
 msgstr ""
 
-#: includes/idpay-edd-gateway.php:376
+#: includes/idpay-edd-gateway.php:384
 msgid "Pending verification."
 msgstr ""
 
-#: includes/idpay-edd-gateway.php:379
+#: includes/idpay-edd-gateway.php:387
 msgid "Payment has been verified."
 msgstr ""
 
-#: includes/idpay-edd-gateway.php:382
+#: includes/idpay-edd-gateway.php:390
 msgid "Payment has already been verified."
 msgstr ""
 
-#: includes/idpay-edd-gateway.php:385
+#: includes/idpay-edd-gateway.php:393
 msgid "To the payee was deposited."
 msgstr ""
 
-#: includes/idpay-edd-gateway.php:388
+#: includes/idpay-edd-gateway.php:396
 msgid "The code has not been defined."
 msgstr ""
