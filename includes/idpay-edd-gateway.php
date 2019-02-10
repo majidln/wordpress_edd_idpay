@@ -212,6 +212,10 @@ function idpay_edd_verify_payment() {
 		wp_die( __( 'The information sent is not correct.', 'idpay-for-edd' ) );
 	}
 
+	if ( idpay_edd_double_spending_occurred( $payment->ID, $id ) ) {
+		wp_die( __( 'The information sent is not correct.', 'idpay-for-edd' ) );
+	}
+
 	if ( $payment->status != 'pending' ) {
 		return FALSE;
 	}
@@ -387,6 +391,22 @@ function idpay_edd_get_verification_status_message( $code ) {
 		default:
 			return __( 'The code has not been defined.', 'idpay-for-edd' );
 	}
+}
+
+/**
+ * Checks if double-spending has been occurred.
+ *
+ * @param $payment_id
+ * @param $remote_id
+ *
+ * @return bool
+ */
+function idpay_edd_double_spending_occurred( $payment_id, $remote_id ) {
+	if ( get_post_meta( $payment_id, '_idpay_edd_transaction_id', TRUE ) != $remote_id ) {
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 /**
