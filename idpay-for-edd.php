@@ -3,10 +3,10 @@
  * Plugin Name: IDPay for Easy Digital Downloads (EDD)
  * Author: IDPay
  * Description: <a href="https://idpay.ir">IDPay</a> secure payment gateway for Easy Digital Downloads (EDD)
- * Version: 1.2.1
+ * Version: 2.0
  * Author URI: https://idpay.ir
  * Author Email: info@idpay.ir
- * Tested up to: 5.0
+ * Tested up to: 5.3
  *
  * Text Domain: idpay-for-edd
  * Domain Path: languages
