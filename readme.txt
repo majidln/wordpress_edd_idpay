@@ -1,6 +1,6 @@
 === IDPay for Easy Digital Downloads (EDD) ===
 Contributors: majidlotfinia, jazaali, imikiani
-Tags: idpay, digital downloads, download, ecommerce, e-commerce, download, payment, gateway, edd, آیدی پی, درگاه, درگاه پرداخت
+Tags: idpay, digital downloads, download, ecommerce, e-commerce, download, payment, gateway, edd, آیدی پی, درگاه, درگاه پرداخت, دانلود
 Stable tag: 2.0
 Tested up to: 5.3
 License: GPLv2 or later
