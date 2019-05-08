@@ -151,15 +151,16 @@ function idpay_edd_create_payment( $purchase_data ) {
 		'X-SANDBOX'    => $sandbox,
 	);
 
-	$args        = array(
+	$args     = array(
 		'body'    => json_encode( $data ),
 		'headers' => $headers,
 		'timeout' => 15,
 	);
-	$response = idpay_edd_call_gateway_endpoint('https://api.idpay.ir/v1.1/payment', $args );
+	$response = idpay_edd_call_gateway_endpoint( 'https://api.idpay.ir/v1.1/payment', $args );
 	if ( is_wp_error( $response ) ) {
 		$note = $response->get_error_message();
 		edd_insert_payment_note( $payment_id, $note );
+
 		return FALSE;
 	}
 	$http_status = wp_remote_retrieve_response_code( $response );
@@ -203,13 +204,13 @@ function idpay_edd_verify_payment() {
 	global $edd_options;
 
 
-	$status   = empty( $_POST['status'] ) ? NULL : $_POST['status'];
-	$track_id = empty( $_POST['track_id'] ) ? NULL : $_POST['track_id'];
-	$id       = empty( $_POST['id'] ) ? NULL : $_POST['id'];
-	$order_id = empty( $_POST['order_id'] ) ? NULL : $_POST['order_id'];
-	$amount   = empty( $_POST['amount'] ) ? NULL : $_POST['amount'];
-	$card_no  = empty( $_POST['card_no'] ) ? NULL : $_POST['card_no'];
-	$date     = empty( $_POST['date'] ) ? NULL : $_POST['date'];
+	$status   = sanitize_text_field( $_POST['status'] );
+	$track_id = sanitize_text_field( $_POST['track_id'] );
+	$id       = sanitize_text_field( $_POST['id'] );
+	$order_id = sanitize_text_field( $_POST['order_id'] );
+	$amount   = sanitize_text_field( $_POST['amount'] );
+	$card_no  = sanitize_text_field( $_POST['card_no'] );
+	$date     = sanitize_text_field( $_POST['date'] );
 
 	if ( empty( $id ) || empty( $order_id ) ) {
 
@@ -269,6 +270,7 @@ function idpay_edd_verify_payment() {
 		if ( is_wp_error( $response ) ) {
 			$note = $response->get_error_message();
 			edd_insert_payment_note( $payment->ID, $note );
+
 			return FALSE;
 		}
 		$http_status = wp_remote_retrieve_response_code( $response );
@@ -461,7 +463,8 @@ function idpay_edd_call_gateway_endpoint( $url, $args ) {
  * @return void
  */
 function idpay_edd_listen() {
-	if ( isset( $_GET[ 'verify_' . IDPAY_EDD_GATEWAY ] ) && $_GET[ 'verify_' . IDPAY_EDD_GATEWAY ] ) {
+	$verify_param =  sanitize_text_field($_GET[ 'verify_' . IDPAY_EDD_GATEWAY ]);
+	if ( isset( $verify_param ) && $verify_param ) {
 
 		// Executes the function(s) hooked into our custom hook for verifying the payment.
 		do_action( 'idpay_edd_verify' );
