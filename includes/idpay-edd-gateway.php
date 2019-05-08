@@ -204,13 +204,14 @@ function idpay_edd_verify_payment() {
 	global $edd_options;
 
 
-	$status   = sanitize_text_field( $_POST['status'] );
-	$track_id = sanitize_text_field( $_POST['track_id'] );
-	$id       = sanitize_text_field( $_POST['id'] );
-	$order_id = sanitize_text_field( $_POST['order_id'] );
-	$amount   = sanitize_text_field( $_POST['amount'] );
-	$card_no  = sanitize_text_field( $_POST['card_no'] );
-	$date     = sanitize_text_field( $_POST['date'] );
+	$status         = sanitize_text_field( $_POST['status'] );
+	$track_id       = sanitize_text_field( $_POST['track_id'] );
+	$id             = sanitize_text_field( $_POST['id'] );
+	$order_id       = sanitize_text_field( $_POST['order_id'] );
+	$amount         = sanitize_text_field( $_POST['amount'] );
+	$card_no        = sanitize_text_field( $_POST['card_no'] );
+	$hashed_card_no = sanitize_text_field( $_POST['hashed_card_no'] );
+	$date           = sanitize_text_field( $_POST['date'] );
 
 	if ( empty( $id ) || empty( $order_id ) ) {
 
@@ -240,6 +241,7 @@ function idpay_edd_verify_payment() {
 	edd_update_payment_meta( $payment->ID, '_idpay_edd_transaction_order_id', $order_id );
 	edd_update_payment_meta( $payment->ID, '_idpay_edd_transaction_amount', $amount );
 	edd_update_payment_meta( $payment->ID, '_idpay_edd_payment_card_no', $card_no );
+	edd_update_payment_meta( $payment->ID, '_idpay_edd_payment_hashed_card_no', $hashed_card_no );
 	edd_update_payment_meta( $payment->ID, '_idpay_edd_payment_date', $date );
 
 
@@ -301,6 +303,7 @@ function idpay_edd_verify_payment() {
 		edd_update_payment_meta( $payment->ID, '_idpay_edd_transaction_amount', $result->amount );
 		if ( ! empty( $result->payment ) ) {
 			edd_update_payment_meta( $payment->ID, '_idpay_edd_payment_card_no', $result->payment->card_no );
+			edd_update_payment_meta( $payment->ID, '_idpay_edd_payment_hashed_card_no', $result->payment->hashed_card_no );
 			edd_update_payment_meta( $payment->ID, '_idpay_edd_payment_date', $result->payment->date );
 		}
 
