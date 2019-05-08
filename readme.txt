@@ -1,8 +1,8 @@
 === IDPay for Easy Digital Downloads (EDD) ===
 Contributors: majidlotfinia, jazaali, imikiani
-Tags: idpay, digital downloads, download, ecommerce, e-commerce, download, payment, gateway, edd, آیدی پی, درگاه, درگاه پرداخت, دانلود
-Stable tag: 2.0
-Tested up to: 5.3
+Tags: idpay, easy digital downloads, download, edd, digital downloads
+Stable tag: 2.0.1
+Tested up to: 5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,11 @@ After creating a web service on https://idpay.ir and getting an API Key, follow 
 After that, if a customer is going to purchase a downloadable product which is created by Easy Digital Downloads, The IDPay payment gateway will appear and she can pay with it.
 
 == Changelog ==
+
+= 2.0.1, May 08, 2019 =
+* Try to connect to the gateway more than one time.
+* Store hashed card number.
+* Sanitize text fields.
 
 = 2.0, February 10, 2019 =
 * Published for web service version 1.1.
