@@ -268,7 +268,7 @@ function idpay_edd_verify_payment() {
 			'timeout' => 15,
 		);
 
-		$response = idpay_edd_call_gateway_endpoint('https://api.idpay.ir/v1.1/payment/verify', $args );
+		$response = idpay_edd_call_gateway_endpoint( 'https://api.idpay.ir/v1.1/payment/verify', $args );
 		if ( is_wp_error( $response ) ) {
 			$note = $response->get_error_message();
 			edd_insert_payment_note( $payment->ID, $note );
@@ -466,7 +466,7 @@ function idpay_edd_call_gateway_endpoint( $url, $args ) {
  * @return void
  */
 function idpay_edd_listen() {
-	$verify_param =  sanitize_text_field($_GET[ 'verify_' . IDPAY_EDD_GATEWAY ]);
+	$verify_param = sanitize_text_field( $_GET[ 'verify_' . IDPAY_EDD_GATEWAY ] );
 	if ( isset( $verify_param ) && $verify_param ) {
 
 		// Executes the function(s) hooked into our custom hook for verifying the payment.
