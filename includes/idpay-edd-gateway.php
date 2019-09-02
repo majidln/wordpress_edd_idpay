@@ -320,7 +320,10 @@ function idpay_edd_verify_payment() {
 		edd_insert_payment_note( $payment->ID, __( 'IDPay tracking id: ', 'idpay-for-edd' ) . $track_id );
 		edd_insert_payment_note( $payment->ID, __( 'Payer card number: ', 'idpay-for-edd' ) . $card_no );
 
-		return FALSE;
+		edd_update_payment_status( $payment->ID, 'failed' );
+		wp_redirect( get_permalink( $edd_options['failure_page'] ) );
+
+		exit;
 	}
 }
 
