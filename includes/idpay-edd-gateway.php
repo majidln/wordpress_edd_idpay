@@ -469,6 +469,10 @@ function idpay_edd_call_gateway_endpoint( $url, $args ) {
  * @return void
  */
 function idpay_edd_listen() {
+	if ( ! isset( $_GET[ 'verify_' . IDPAY_EDD_GATEWAY ] ) ) {
+		return;
+	}
+	
 	$verify_param = sanitize_text_field( $_GET[ 'verify_' . IDPAY_EDD_GATEWAY ] );
 	if ( isset( $verify_param ) && $verify_param ) {
 
