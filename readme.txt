@@ -1,7 +1,7 @@
 === IDPay for Easy Digital Downloads (EDD) ===
 Contributors: majidlotfinia, jazaali, imikiani, vispa, mnbp1371
 Tags: idpay, easy digital downloads, download, edd, digital downloads, آیدی پی
-Stable tag: 2.1.0
+Stable tag: 2.0.4
 Tested up to: 5.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -27,9 +27,15 @@ After that, if a customer is going to purchase a downloadable product which is c
 
 == Changelog ==
 
-= 2.1.0, July 15, 2020 =
+= 2.0.4, July 15, 2020 =
 * Fix bug.
 * Clean code.
+
+= 2.0.3, October 02, 2019 =
+* Fix a bug which caused notice output in payment verification
+
+= 2.0.2, September 02, 2019 =
+* Address a problem is payment cancellation
 
 = 2.0.1, May 08, 2019 =
 * Try to connect to the gateway more than one time.

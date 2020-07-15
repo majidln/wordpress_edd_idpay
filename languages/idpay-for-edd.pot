@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the IDPay for Easy Digital Downloads (EDD) plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: IDPay for Easy Digital Downloads (EDD) 2.1.0\n"
+"Project-Id-Version: IDPay for Easy Digital Downloads (EDD) 2.0.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/idpay-for-edd\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
