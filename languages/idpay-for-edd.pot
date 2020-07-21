@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the IDPay for Easy Digital Downloads (EDD) plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: IDPay for Easy Digital Downloads (EDD) 2.0.1\n"
+"Project-Id-Version: IDPay for Easy Digital Downloads (EDD) 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/idpay-for-edd\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -122,3 +122,45 @@ msgstr ""
 #: includes/idpay-edd-gateway.php:417
 msgid "The code has not been defined."
 msgstr ""
+
+msgid "Payment has not been made. code:"
+msgstr "پرداخت انجام نشده است. کدخطا"
+
+msgid "Payment has failed. code:"
+msgstr "پرداخت ناموفق بوده است. کدخطا"
+
+msgid "An error has occurred. code:"
+msgstr "خطا رخ داده است. کدخطا"
+
+msgid "Blocked. code:"
+msgstr "بلوکه شده. کدخطا"
+
+msgid "Return to payer. code:"
+msgstr "برگشت به پرداخت کننده. کدخطا"
+
+msgid "Systematic return. code:"
+msgstr "برگشت خورده سیستمی. کدخطا"
+
+msgid "Cancel payment. code:"
+msgstr "انصراف از پرداخت. کدخطا"
+
+msgid "It was transferred to the payment gateway. code:"
+msgstr "به درگاه پرداخت منتقل شد. کدخطا"
+
+msgid "Waiting for payment confirmation. code:"
+msgstr "در انتظار تایید پرداخت. کدخطا"
+
+msgid "Payment has been confirmed. code:"
+msgstr "پرداخت تایید شده است. کدخطا"
+
+msgid "Payment has already been confirmed. code:"
+msgstr "پرداخت قبلا تایید شده است. کدخطا"
+
+msgid "Deposited to the recipient. code:"
+msgstr "به دریافت کننده واریز شده. کدخطا"
+
+msgid "Abuse of previous transactions. code:"
+msgstr "سواستفاده از تراکنش قبلی. کدخطا"
+
+msgid "Unexpected error. code:"
+msgstr "خطا دور از نتظار. کدخطا"
