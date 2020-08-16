@@ -1,4 +1,4 @@
-# Copyright (C) 2019 IDPay
+# Copyright (C) 2020 IDPay
 # This file is distributed under the same license as the IDPay for Easy Digital Downloads (EDD) plugin.
 msgid ""
 msgstr ""

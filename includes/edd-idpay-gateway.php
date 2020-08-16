@@ -3,7 +3,7 @@
  * Plugin Name: IDPay for Easy Digital Downloads (EDD)
  * Author: IDPay
  * Description: <a href="https://idpay.ir">IDPay</a> secure payment gateway for Easy Digital Downloads (EDD)
- * Version: 2.1.0
+ * Version: 2.1.1
  * Author URI: https://idpay.ir
  * Author Email: info@idpay.ir
  *
@@ -30,9 +30,10 @@ class EDD_IDPay_Gateway
     $this->keyname = 'idpay';
     add_filter('edd_payment_gateways', array($this, 'add'));
     add_action($this->format('edd_{key}_cc_form'), array($this, 'cc_form'));
-    add_action($this->format('edd_gateway_{key}'), array($this, 'payment'));
+    add_action($this->format('edd_gateway_{key}'), array($this, 'process'));
     add_action($this->format('edd_verify_{key}'), array($this, 'verify'));
     add_filter('edd_settings_gateways', array($this, 'settings'));
+    add_action( 'edd_payment_receipt_after', array( $this, 'receipt' ) );
     add_action('init', array($this, 'listen'));
   }
 
@@ -42,6 +43,9 @@ class EDD_IDPay_Gateway
    */
   public function add($gateways)
   {
+    if ( ! isset( $_SESSION ) ) {
+      session_start();
+    }
     $gateways[$this->keyname] = array(
       'admin_label' => __('IDPay', 'idpay-for-edd'),
       'checkout_label' => __('IDPay payment gateway', 'idpay-for-edd'),
@@ -62,19 +66,17 @@ class EDD_IDPay_Gateway
    * @param $purchase_data
    * @return bool
    */
-  public function payment($purchase_data)
+  public function process($purchase_data)
   {
     global $edd_options;
-
     //create payment
     $payment_id = $this->insert_payment($purchase_data);
-
     if ($payment_id) {
       $api_key = empty($edd_options['idpay_api_key']) ? '' : $edd_options['idpay_api_key'];
       $sandbox = empty($edd_options['idpay_sandbox']) ? '' : $edd_options['idpay_sandbox'];
       $customer_name = $purchase_data['user_info']['first_name'] . ' ' . $purchase_data['user_info']['last_name'];
       $desc = "description(payment id is $payment_id)";
-      $callback = add_query_arg('verify_' . $this->keyname, '1', get_permalink($edd_options['success_page']));
+      $callback = add_query_arg(array('verify_' . $this->keyname => '1', 'payment_key' => urlencode($purchase_data['purchase_key'])), get_permalink($edd_options['success_page']));
       $email = $purchase_data['user_info']['email'];
       $amount = $this->idpay_edd_get_amount(intval($purchase_data['price']), edd_get_currency());
 
@@ -137,6 +139,7 @@ class EDD_IDPay_Gateway
 
       edd_update_payment_meta($payment_id, '_idpay_edd_transaction_id', $result->id);
       edd_update_payment_meta($payment_id, '_idpay_edd_transaction_link', $result->link);
+
       wp_redirect($result->link);
 
     } else {
@@ -154,7 +157,6 @@ class EDD_IDPay_Gateway
   public function verify()
   {
     global $edd_options;
-
     $status = sanitize_text_field($_POST['status']);
     $track_id = sanitize_text_field($_POST['track_id']);
     $id = sanitize_text_field($_POST['id']);
@@ -278,11 +280,16 @@ class EDD_IDPay_Gateway
       }
 
       if ($result->status >= 100) {
-        edd_insert_payment_note($payment->ID, $status . ' - ' . $this->idpay_other_status_messages($status));
+        $session = edd_get_purchase_session();
+        if (!$session) {
+          edd_set_purchase_session(['purchase_key' => urldecode($_GET['payment_key'])]);
+          $session = edd_get_purchase_session();
+        }
+
         edd_empty_cart();
         edd_update_payment_status($payment->ID, 'publish');
-
-        return TRUE;
+        edd_insert_payment_note($payment->ID, $status . ' - ' . $this->idpay_other_status_messages($status));
+        edd_send_to_success_page();
       } else {
         $message = $this->idpay_other_status_messages();
         edd_insert_payment_note($payment->ID, $message);
@@ -292,6 +299,19 @@ class EDD_IDPay_Gateway
 
         return FALSE;
       }
+    }
+  }
+
+  /**
+   * Receipt field for payment
+   *
+   * @param 				object $payment
+   * @return 				void
+   */
+  public function receipt( $payment ) {
+    $track_id = edd_get_payment_meta( $payment->ID, 'idpay_track_id' );
+    if ( $track_id ) {
+      echo '<tr><td><strong>شماره تراکنش بانکی:</strong></td><td>' . $track_id . '</td></tr>';
     }
   }
 
