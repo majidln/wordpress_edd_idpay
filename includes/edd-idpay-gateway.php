@@ -3,7 +3,7 @@
  * Plugin Name: IDPay for Easy Digital Downloads (EDD)
  * Author: IDPay
  * Description: <a href="https://idpay.ir">IDPay</a> secure payment gateway for Easy Digital Downloads (EDD)
- * Version: 2.1.1
+ * Version: 2.1.2
  * Author URI: https://idpay.ir
  * Author Email: info@idpay.ir
  *
@@ -487,7 +487,7 @@ class EDD_IDPay_Gateway
       case "3":
         $msg = __("An error has occurred. code:", 'idpay-for-edd');
         break;
-      case "3":
+      case "4":
         $msg = __("Blocked. code:", 'idpay-for-edd');
         break;
       case "5":
