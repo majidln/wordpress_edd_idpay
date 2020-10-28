@@ -3,7 +3,7 @@
  * Plugin Name: IDPay for Easy Digital Downloads (EDD)
  * Author: IDPay
  * Description: <a href="https://idpay.ir">IDPay</a> secure payment gateway for Easy Digital Downloads (EDD)
- * Version: 2.1.1
+ * Version: 2.1.2
  * Author URI: https://idpay.ir
  * Author Email: info@idpay.ir
  *
@@ -157,14 +157,21 @@ class EDD_IDPay_Gateway
   public function verify()
   {
     global $edd_options;
-    $status = sanitize_text_field($_POST['status']);
-    $track_id = sanitize_text_field($_POST['track_id']);
-    $id = sanitize_text_field($_POST['id']);
-    $order_id = sanitize_text_field($_POST['order_id']);
-    $amount = sanitize_text_field($_POST['amount']);
-    $card_no = sanitize_text_field($_POST['card_no']);
-    $hashed_card_no = sanitize_text_field($_POST['hashed_card_no']);
-    $date = sanitize_text_field($_POST['date']);
+
+    // Check method post or get
+    $method = $_SERVER['REQUEST_METHOD'];
+    if ($method == 'POST') {
+      $status = sanitize_text_field($_POST['status']);
+      $track_id = sanitize_text_field($_POST['track_id']);
+      $id = sanitize_text_field($_POST['id']);
+      $order_id = sanitize_text_field($_POST['order_id']);
+    }
+    elseif ($method == 'GET') {
+      $status = sanitize_text_field($_GET['status']);
+      $track_id = sanitize_text_field($_GET['track_id']);
+      $id = sanitize_text_field($_GET['id']);
+      $order_id = sanitize_text_field($_GET['order_id']);
+    }
 
     if (empty($id) || empty($order_id)) {
       wp_die(__('The information sent is not correct.', 'idpay-for-edd'));
@@ -185,8 +192,6 @@ class EDD_IDPay_Gateway
     if ($status != 10) {
       edd_insert_payment_note($order_id, $status . ' - ' . $this->idpay_other_status_messages($status));
       edd_insert_payment_note($order_id, __('IDPay tracking id: ', 'idpay-for-edd') . $track_id);
-      edd_insert_payment_note($order_id, __('Payer card number: ', 'idpay-for-edd') . $card_no);
-      edd_insert_payment_note($order_id, __('Payer card hash number: ', 'idpay-for-edd') . $hashed_card_no);
       edd_update_payment_status($order_id, 'failed');
       edd_set_error('idpay_connect_error', $this->idpay_other_status_messages($status));
       edd_send_back_to_checkout();
@@ -269,7 +274,7 @@ class EDD_IDPay_Gateway
         return FALSE;
       }
 
-      if (empty($verify_status) || empty($verify_track_id) || empty($verify_amount) || $verify_amount != $amount) {
+      if (empty($verify_status) || empty($verify_track_id) || empty($verify_amount)) {
         $message = $this->idpay_other_status_messages();
         edd_insert_payment_note($payment->ID, $message);
         edd_update_payment_status($payment->ID, 'failed');
@@ -482,7 +487,7 @@ class EDD_IDPay_Gateway
       case "3":
         $msg = __("An error has occurred. code:", 'idpay-for-edd');
         break;
-      case "3":
+      case "4":
         $msg = __("Blocked. code:", 'idpay-for-edd');
         break;
       case "5":
