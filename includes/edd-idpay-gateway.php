@@ -1,15 +1,4 @@
 <?php
-/**
- * Plugin Name: IDPay for Easy Digital Downloads (EDD)
- * Author: IDPay
- * Description: <a href="https://idpay.ir">IDPay</a> secure payment gateway for Easy Digital Downloads (EDD)
- * Version: 2.1.2
- * Author URI: https://idpay.ir
- * Author Email: info@idpay.ir
- *
- * Text Domain: idpay-for-edd
- * Domain Path: languages
- */
 
 if (!class_exists('EDD_IDPay_Gateway')) exit;
 
